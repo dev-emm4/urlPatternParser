@@ -1,5 +1,5 @@
 from typing import List
-from ..mv3Rule.mv3Rule import Mv3Rule
+from mv3Rule import Mv3Rule
 
 class Parser:
     def parseFromFile(self, location: str) -> List[Mv3Rule]:
