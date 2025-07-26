@@ -1,3 +1,3 @@
 class Action:
-    def __init__(self):
-        type: str
+    def __init__(self, aType):
+        type: str = aType
