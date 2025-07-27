@@ -1,6 +1,7 @@
 import re
 from typing import List
 
+
 class FileImporter:
     def importUnformattedRuleFrom(self, aFileName: str) -> List[str]:
         try:
@@ -19,7 +20,7 @@ class FileImporter:
     def _getUnformattedFilteringRulesFrom(self, aStringList: List[str]) -> List[str]:
         unformattedRules: List[str] = []
         for string in aStringList:
-            stringWithoutSpace: str =  self._removeSpacesFromString(string)
+            stringWithoutSpace: str = self._removeSpacesFromString(string)
             if self._isStringANetworkFilteringRule(stringWithoutSpace):
                 unformattedRules.append(stringWithoutSpace)
 
@@ -33,7 +34,8 @@ class FileImporter:
             return False
         elif aString.startswith('!'):
             return False
-        elif re.match(r'^(?:[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\s*,\s*[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})*\s*)?(?:##|#[@$?]#)', aString):
+        elif re.match(r'^(?:[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\s*,\s*[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})*\s*)?(?:##|#[@$?]#)',
+                      aString):
             return False
         else:
             return True

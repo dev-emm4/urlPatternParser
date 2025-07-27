@@ -1,5 +1,4 @@
 from typing import List
-from optionValidator import OptionValidator
 
 class Condition:
     def __init__(self):
@@ -10,7 +9,12 @@ class Condition:
         self.excludedInitiatorDomain: None | List[str] = None
         self.resourceType: None | List[str] = None
         self.excludedResourceType: None | List[str] = None
-        self.optionValidator: OptionValidator = OptionValidator()
+
+    def setUrlFilter(self, aUrlFilter: str):
+        self.urlFilter = aUrlFilter
+
+    def setRegexFilter(self, aRegexFilter: str):
+        self.regexFilter = aRegexFilter
 
     def setDomainType(self, aDomainType: str):
         if aDomainType.startswith('~'):

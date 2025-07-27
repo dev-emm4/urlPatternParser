@@ -1,8 +1,10 @@
 from typing import List
-from src.mv3Rule.mv3Rule import Mv3Rule
-from src.mv3Rule.mv3Rule import Condition
+
 from src.mv3Rule.action import Action
-from optionValidator import OptionValidator
+from src.mv3Rule.mv3Rule import Condition
+from src.mv3Rule.mv3Rule import Mv3Rule
+from unFormattedRuleOptionValidator import UnFormattedRuleOptionValidator
+
 
 class Mv3RuleFactory:
     def createMv3Rule(self, aUnformattedRule: str, aId: int) -> Mv3Rule:
@@ -57,15 +59,15 @@ class Mv3RuleFactory:
 
     def _registerPatternInCondition(self, aPattern: str, aCondition: Condition):
         if self._isPatternregexFilter(aPattern):
-            aCondition.regexFilter = aPattern
+            aCondition.setRegexFilter(aPattern)
         else:
-            aCondition.urlFilter = aPattern
+            aCondition.setUrlFilter(aPattern)
 
     def _isPatternregexFilter(self, aPattern: str):
         if aPattern.startswith('/') and aPattern.endswith('/'):
             return True
         else:
-            return  False
+            return False
 
     def _retrieveOptionIn(self, aUnformattedRule: str) -> str:
         option: str = aUnformattedRule.split('$', 1)[1]
@@ -86,17 +88,17 @@ class Mv3RuleFactory:
             self._setResourceTypeInCondition(aCondition, option)
 
     def _setDomainTypeInCondition(self, aCondition: Condition, aOption: str):
-        optionValidator: OptionValidator = OptionValidator()
+        optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
 
         if not optionValidator.optionIsAValidDomainType(aOption):
             return
         if not aCondition.isDomainTypeNone():
-            raise  Exception('domain Type conflict')
+            raise Exception('domain Type conflict')
 
         aCondition.setDomainType(aOption)
 
     def _setInitiatorDomainInCondition(self, aCondition: Condition, aOption: str):
-        optionValidator: OptionValidator = OptionValidator()
+        optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
 
         if not optionValidator.optionIsAInitiatorDomain(aOption):
             return
@@ -125,7 +127,7 @@ class Mv3RuleFactory:
         return aInitiatorDomain.split('|')
 
     def _setResourceTypeInCondition(self, aCondition: Condition, aOption: str):
-        optionValidator: OptionValidator = OptionValidator()
+        optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
 
         if not optionValidator.optionIsAVResourceType(aOption):
             return

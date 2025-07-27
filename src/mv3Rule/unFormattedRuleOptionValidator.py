@@ -2,7 +2,7 @@ import re
 from typing import List
 
 
-class OptionValidator:
+class UnFormattedRuleOptionValidator:
      def __init__(self):
          self.resourceTypeValues: List[str] = [ 'script','image', 'stylesheet', 'object', 'xmlhttprequest',
                                                 'subdocument', 'ping', 'websocket', 'webrtc' , 'document' ,

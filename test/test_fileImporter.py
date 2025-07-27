@@ -1,4 +1,3 @@
-import re
 import unittest
 from typing import List
 from src.fileImporter import FileImporter
