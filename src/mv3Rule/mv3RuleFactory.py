@@ -22,6 +22,8 @@ class Mv3RuleFactory:
 
         if self._doesUnformattedRuleHaveOption(aUnformattedRule):
             pattern: str = self._retrievePatternIn(aUnformattedRule)
+            pattern = self._removeAllowSymbolFromPattern(pattern)
+
             self._registerPatternInCondition(pattern, condition)
             option: str = self._retrieveOptionIn(aUnformattedRule)
 
@@ -38,6 +40,11 @@ class Mv3RuleFactory:
             pattern: str = aUnformattedRule
             self._registerPatternInCondition(pattern, condition)
             return condition
+
+    def _removeAllowSymbolFromPattern(self, aPattern: str):
+        if aPattern.startswith('@@'):
+            return aPattern[2:]
+        return aPattern
 
     def _doesUnformattedRuleHaveOption(self, aUnformattedRule: str) -> bool:
         if '$' in aUnformattedRule:
