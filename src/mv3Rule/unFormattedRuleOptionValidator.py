@@ -11,7 +11,7 @@ class UnFormattedRuleOptionValidator:
                                                 '~elemhide','~other''elemhide' , 'popup', 'font' , 'media' , 'other']
          self.domainTypeValues: List[str] = ['third-party', '~third-party']
 
-     def optionIsAVResourceType(self, aValue: str):
+     def optionIsAValidResourceType(self, aValue: str):
          if aValue in self.resourceTypeValues:
              return True
          return False

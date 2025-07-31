@@ -14,7 +14,13 @@ class Condition:
         self.urlFilter = aUrlFilter
 
     def setRegexFilter(self, aRegexFilter: str):
-        self.regexFilter = aRegexFilter
+        newRegexFilter: str = self._removeForwardSlash(aRegexFilter)
+        self.regexFilter = newRegexFilter
+
+    def _removeForwardSlash(self, aString):
+        if len(aString) <= 2:
+            return ""
+        return aString[1:-1]
 
     def setDomainType(self, aDomainType: str):
         if aDomainType.startswith('~'):

@@ -33,13 +33,13 @@ class Mv3RuleFactoryTestCase(unittest.TestCase):
         self.assertIn('script', mv3Rule.condition.resourceType)
         self.assertIn('xmlhttprequest', mv3Rule.condition.excludedResourceType)
 
-    def test_should_throw_exception_when_double_DomainOption_is_defined(self):
+    def test_should_throw_exception_when_domainOption_is_specified_twice(self):
         mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
         unFormattedRule: str = '@@/exoclick.$script,~xmlhttprequest,domain=exoclick.bamboohr.co.uk|~exoclick.kayako.com,domain=example.com,~third-party'
 
         self.assertRaises(Exception, mv3RuleFactory.createMv3Rule, [unFormattedRule, 1])
 
-    def test_should_throw_exception_when_double_domainType_is_defined(self):
+    def test_should_throw_exception_when_domainType_is_specified_twice(self):
         mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
         unFormattedRule: str = '@@/exoclick.$script,~xmlhttprequest,domain=exoclick.bamboohr.co.uk|~exoclick.kayako.com, ~third-party, third-party'
 

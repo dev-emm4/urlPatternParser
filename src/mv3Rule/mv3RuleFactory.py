@@ -26,7 +26,7 @@ class Mv3RuleFactory:
             pattern: str = self._retrievePatternIn(aUnformattedRule)
             pattern = self._removeAllowSymbolFromPattern(pattern)
 
-            self._registerPatternInCondition(pattern, condition)
+            self._setPatternInCondition(pattern, condition)
             option: str = self._retrieveOptionIn(aUnformattedRule)
 
             if self._isOptionAList(option):
@@ -40,7 +40,7 @@ class Mv3RuleFactory:
             return condition
         else:
             pattern: str = aUnformattedRule
-            self._registerPatternInCondition(pattern, condition)
+            self._setPatternInCondition(pattern, condition)
             return condition
 
     def _removeAllowSymbolFromPattern(self, aPattern: str):
@@ -57,7 +57,7 @@ class Mv3RuleFactory:
         pattern: str = aUnformattedRule.split('$', 1)[0]
         return pattern
 
-    def _registerPatternInCondition(self, aPattern: str, aCondition: Condition):
+    def _setPatternInCondition(self, aPattern: str, aCondition: Condition):
         if self._isPatternregexFilter(aPattern):
             aCondition.setRegexFilter(aPattern)
         else:
@@ -129,7 +129,7 @@ class Mv3RuleFactory:
     def _setResourceTypeInCondition(self, aCondition: Condition, aOption: str):
         optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
 
-        if not optionValidator.optionIsAVResourceType(aOption):
+        if not optionValidator.optionIsAValidResourceType(aOption):
             return
         aCondition.setResourceType(aOption)
 
