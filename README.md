@@ -58,4 +58,13 @@ python parser.parse(input_rules.txt, output_rules.json)
 
 ---
 
+## Disclaimer
+
+Invalid URL rules will be automatically dropped during parsing. This includes:
+
+1. Rules that have a URL filter starting with "||*"
+2. Rules that have invalid regex filters
+3. Rules with duplicate initiator domain options (multiple "domain=" declarations)
+4. Rules with duplicate domain type definitions (e.g., "third-party" defined twice with or without the "~")
+
 **Note**: This tool is designed to help with Manifest V3 migration. Always test your converted rules thoroughly in your extension environment.
