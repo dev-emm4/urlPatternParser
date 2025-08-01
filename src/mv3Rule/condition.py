@@ -26,7 +26,7 @@ class Condition:
         if aDomainType.startswith('~'):
             self.domainType = 'firstParty'
         else:
-            self.domainType = ' thirdParty'
+            self.domainType = 'thirdParty'
 
     def setInitiatorDomain(self, aInitiatorDomainList: List[str]):
         for initiatorDomain in aInitiatorDomainList:
@@ -82,6 +82,6 @@ class Condition:
         return False
 
     def isInitiatorDomainSet(self):
-        if not (self.initiatorDomain is None or self.excludedInitiatorDomain is None):
+        if self.initiatorDomain is not None or self.excludedInitiatorDomain is not None:
             return True
         return False

@@ -1,0 +1,11 @@
+! correct rules
+
+/parser.com$stylesheet
+/parser.net/*$image,domain=~kamaz-service.kz|~theatreticketsdirect.co.uk
+
+! incorrect rules
+
+/example2/$image,domain=example.com|example.com,domain=example.com
+exam$script,~third-party,third-party
+||*example$stylesheet,script
+/exa(mple/$image,domain=~example.com

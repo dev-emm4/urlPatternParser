@@ -1,5 +1,6 @@
 import re
 
+from src.error import ParsingError
 from src.mv3Rule.mv3Rule import Mv3Rule
 
 
@@ -14,7 +15,7 @@ class Mv3RuleValidator:
         if aMv3Rule.condition.regexFilter is None:
             return
         if aMv3Rule.condition.regexFilter == "":
-            raise Exception("regexFilter cannot be empty")
+            raise ParsingError("regexFilter cannot be empty")
 
         #validating regexFilter with re.compile
         re.compile(aMv3Rule.condition.regexFilter)
@@ -24,9 +25,9 @@ class Mv3RuleValidator:
         if aMv3Rule.condition.urlFilter is None:
             return
         if aMv3Rule.condition.urlFilter.startswith('||*'):
-            raise Exception('urlFilter cannot start with ||*')
+            raise ParsingError('urlFilter cannot start with ||*')
         if aMv3Rule.condition.urlFilter == "":
-            raise Exception('urlFilter cannot be empty')
+            raise ParsingError('urlFilter cannot be empty')
 
         return
 
@@ -36,5 +37,5 @@ class Mv3RuleValidator:
 
         for resourceType in aMv3Rule.condition.resourceType:
             if resourceType in aMv3Rule.condition.excludedResourceType:
-                raise Exception(f'conflicting resource type and excluded resource type: {resourceType}')
+                raise ParsingError(f'conflicting resource type and excluded resource type: {resourceType}')
         return

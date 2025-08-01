@@ -1,5 +1,7 @@
+import re
 import unittest
 
+from src.error import ParsingError
 from src.mv3Rule.mv3Rule import Mv3Rule
 from src.mv3Rule.mv3RuleFactory import Mv3RuleFactory
 from src.mv3RuleValidator import Mv3RuleValidator
@@ -16,8 +18,8 @@ class Mv3RuleValidatorTestCase(unittest.TestCase):
         mv3Rule2: Mv3Rule = mv3RuleFactory.createMv3Rule(unFormattedRule2, 2)
 
 
-        self.assertRaises(Exception, mv3RuleValidator.validate, mv3Rule1)
-        self.assertRaises(Exception, mv3RuleValidator.validate, mv3Rule2)
+        self.assertRaises(ParsingError, mv3RuleValidator.validate, mv3Rule1)
+        self.assertRaises(re.error, mv3RuleValidator.validate, mv3Rule2)
 
     def test_should_raise_exception_when_urlFilter_is_invalid(self):
         mv3RuleValidator: Mv3RuleValidator = Mv3RuleValidator()
@@ -29,8 +31,8 @@ class Mv3RuleValidatorTestCase(unittest.TestCase):
         mv3Rule1: Mv3Rule = mv3RuleFactory.createMv3Rule(unFormattedRule1, 1)
         mv3Rule12: Mv3Rule = mv3RuleFactory.createMv3Rule(unFormattedRule2, 2)
 
-        self.assertRaises(Exception, mv3RuleValidator.validate, mv3Rule1)
-        self.assertRaises(Exception, mv3RuleValidator.validate, mv3Rule12)
+        self.assertRaises(ParsingError, mv3RuleValidator.validate, mv3Rule1)
+        self.assertRaises(ParsingError, mv3RuleValidator.validate, mv3Rule12)
 
     def test_should_raise_exception_when_resourceType_conflict_exists(self):
         mv3RuleValidator: Mv3RuleValidator = Mv3RuleValidator()
@@ -40,7 +42,7 @@ class Mv3RuleValidatorTestCase(unittest.TestCase):
 
         mv3Rule: Mv3Rule = mv3RuleFactory.createMv3Rule(unFormattedRule, 1)
 
-        self.assertRaises(Exception, mv3RuleValidator.validate, mv3Rule)
+        self.assertRaises(ParsingError, mv3RuleValidator.validate, mv3Rule)
 
 
 

@@ -1,5 +1,6 @@
 from typing import List
 
+from src.error import ParsingError
 from src.mv3Rule.action import Action
 from src.mv3Rule.mv3Rule import Condition
 from src.mv3Rule.mv3Rule import Mv3Rule
@@ -93,7 +94,7 @@ class Mv3RuleFactory:
         if not optionValidator.optionIsAValidDomainType(aOption):
             return
         if not aCondition.isDomainTypeNone():
-            raise Exception('domain Type conflict')
+            raise ParsingError('domain Type conflict')
 
         aCondition.setDomainType(aOption)
 
@@ -103,7 +104,7 @@ class Mv3RuleFactory:
         if not optionValidator.optionIsAInitiatorDomain(aOption):
             return
         if aCondition.isInitiatorDomainSet():
-            raise Exception('double domain found in rule')
+            raise ParsingError('double domain found in rule')
 
         newInitiatorDomain: str = self._cleanInitiatorDomain(aOption)
 
@@ -118,7 +119,7 @@ class Mv3RuleFactory:
         cleanInitiatorDomain: str = aInitiatorDomain.split('domain=', 1)[1]
         return cleanInitiatorDomain
 
-    def _isInitiatorDomainAList(self, aInitiatorDomain: str) -> str:
+    def _isInitiatorDomainAList(self, aInitiatorDomain: str) -> bool:
         if '|' in aInitiatorDomain:
             return True
         return False
