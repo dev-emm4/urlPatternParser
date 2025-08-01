@@ -46,7 +46,7 @@ The parser generates rules compatible with Chrome's declarativeNetRequest API:
 First, clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/urlPatternParser.git
+git clone https://github.com/dev-emm4/urlPatternParser.git
 cd urlPatternParser
 ```
 
