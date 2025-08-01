@@ -1,6 +1,6 @@
 # urlPatternParser
 
-A Python library for converting unformatted URL filtering rules (like those from EasyList) into Manifest V3 compatible declarativeNetRequest API rules.
+A Python codebase for converting unformatted URL filtering rules (like those from EasyList) into Manifest V3 compatible declarativeNetRequest API rules.
 
 ## Overview
 
@@ -39,6 +39,21 @@ The parser generates rules compatible with Chrome's declarativeNetRequest API:
     }
   }
 ]
+```
+
+## Usage
+
+First, clone the repository:
+
+```bash
+git clone https://github.com/yourusername/urlPatternParser.git
+cd urlPatternParser
+```
+
+Then run the parser to convert your filter lists:
+
+```bash
+python parser.parse(input_rules.txt, output_rules.json)
 ```
 
 ---
