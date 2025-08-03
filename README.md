@@ -57,7 +57,7 @@ The parser generates rules compatible with Chrome's declarativeNetRequest, the g
 
 2. **Run the parser**:
    ```bash
-   python run.py --inputPath input.txt --outputFolderPath folder
+   python run.py --inputPath "input.txt" --outputFolderPath "folder"
    ```
 
 ### Arguments
@@ -91,7 +91,7 @@ This will display all available options and usage information.
 
 Invalid URL rules will be automatically dropped during parsing. This includes:
 
-1. Rules that have a URL filter starting with "||*"
+1. Rules with invalid URL filter i.e. empty filters and filters starting with "||*"
 2. Rules that have invalid regex filters
 3. Rules with duplicate initiator domain options (multiple "domain=" declarations)
 4. Rules with duplicate domain type definitions (e.g., "third-party" defined twice with or without the "~")
