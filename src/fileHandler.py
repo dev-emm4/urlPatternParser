@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 from typing import List, Dict, Any
 
-from src.error import FilePathError
-from src.mv3Rule.mv3Rule import Mv3Rule
+from error import FilePathError
+from mv3Rule.mv3Rule import Mv3Rule
 
 
 class FileHandler:
@@ -76,14 +76,6 @@ class FileHandler:
         path = path.resolve()
         return path
 
-    def _validateFile(self, aFilePath: Path, aExtension: List[str]):
-        if not aFilePath.exists():
-            raise FilePathError(f'file path does not exist: {aFilePath}')
-        if not aFilePath.is_file():
-            raise FilePathError(f'file does not exists: {aFilePath}')
-        if not aFilePath.suffix.lower() in aExtension:
-            raise FilePathError('invalid extension')
-
     def _validateOutputFolder(self, aOutputFolderPath: Path):
         if not aOutputFolderPath.exists():
             aOutputFolderPath.mkdir(parents=True, exist_ok=True)
@@ -94,3 +86,11 @@ class FileHandler:
         stem: str = aInputFilePath.stem
         outputFilename: str = f"{stem}{'_processed'}{'.json'}"
         return outputFilename
+
+    def _validateFile(self, aFilePath: Path, aExtension: List[str]):
+        if not aFilePath.exists():
+            raise FilePathError(f'file path does not exist: {aFilePath}')
+        if not aFilePath.is_file():
+            raise FilePathError(f'file does not exists: {aFilePath}')
+        if not aFilePath.suffix.lower() in aExtension:
+            raise FilePathError('invalid extension')

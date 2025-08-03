@@ -1,10 +1,10 @@
 import re
 from typing import List
 
-from src.error import ParsingError
-from src.mv3Rule.action import Action
-from src.mv3Rule.mv3Rule import Condition
-from src.mv3Rule.mv3Rule import Mv3Rule
+from error import ParsingError
+from .action import Action
+from .condition import Condition
+from .mv3Rule import Mv3Rule
 from unFormattedRuleOptionValidator import UnFormattedRuleOptionValidator
 
 
@@ -25,13 +25,13 @@ class Mv3RuleFactory:
         condition: Condition = Condition()
         pattern: str = self._extractPatternFromUnformattedRule(aUnformattedRule)
 
-        self._setRegexFilterIn(condition, pattern)
-        self._setUrlFilter(condition, pattern)
+        self._setRegexFilterInCondition(condition, pattern)
+        self._setUrlFilterInCondition(condition, pattern)
 
-        if not self._doesUnformattedRuleHaveOption(aUnformattedRule):
+        if not self._doesOptionExistInUnformattedRule(aUnformattedRule):
             return condition
 
-        option: str = self._extractOptionIn(aUnformattedRule)
+        option: str = self._extractOptionFrom(aUnformattedRule)
 
         if self._isOptionAList(option):
             optionList: List[str] = self._splitOptions(option)
@@ -44,7 +44,7 @@ class Mv3RuleFactory:
         return condition
 
     def _extractPatternFromUnformattedRule(self, aUnformattedRule: str) -> str:
-        if self._doesUnformattedRuleHaveOption(aUnformattedRule):
+        if self._doesOptionExistInUnformattedRule(aUnformattedRule):
             pattern: str = aUnformattedRule.split('$', 1)[0]
             pattern = self._removeAllowSymbolFromPattern(pattern)
             return pattern
@@ -53,7 +53,7 @@ class Mv3RuleFactory:
             pattern = self._removeAllowSymbolFromPattern(pattern)
             return pattern
 
-    def _doesUnformattedRuleHaveOption(self, aUnformattedRule: str) -> bool:
+    def _doesOptionExistInUnformattedRule(self, aUnformattedRule: str) -> bool:
         if '$' in aUnformattedRule:
             return True
         return False
@@ -63,7 +63,7 @@ class Mv3RuleFactory:
             return aPattern[2:]
         return aPattern
 
-    def _setRegexFilterIn(self, aCondition: Condition, aPattern: str):
+    def _setRegexFilterInCondition(self, aCondition: Condition, aPattern: str):
         if not self._isPatternRegexFilter(aPattern):
             return
 
@@ -84,7 +84,7 @@ class Mv3RuleFactory:
         re.compile(aRegexFilter)
         return
 
-    def _setUrlFilter(self, aCondition: Condition, aPattern: str):
+    def _setUrlFilterInCondition(self, aCondition: Condition, aPattern: str):
         if self._isPatternRegexFilter(aPattern):
             return
 
@@ -107,7 +107,7 @@ class Mv3RuleFactory:
 
         return
 
-    def _extractOptionIn(self, aUnformattedRule: str) -> str:
+    def _extractOptionFrom(self, aUnformattedRule: str) -> str:
         option: str = aUnformattedRule.split('$', 1)[1]
         return option
 

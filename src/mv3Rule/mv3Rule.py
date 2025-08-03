@@ -1,5 +1,5 @@
-from condition import Condition
-from action import Action
+from .condition import Condition
+from .action import Action
 
 class Mv3Rule:
     def __init__(self, aId: int, aPriority: int, aAction: Action, aCondition: Condition):
