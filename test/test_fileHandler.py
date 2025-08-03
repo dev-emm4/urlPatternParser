@@ -50,12 +50,12 @@ class FileHandlerTestCase(unittest.TestCase):
 
         expectedFullOutputFilePath: str = \
             '/home/emmanuel/Desktop/urlPatternParser/test/processedMv3RuleList/testList_processed.json'
-        fullOutFilePath: str = fileHandler.generateOutPutFilePath(
+        generatedFullOutputFilePath: str = fileHandler.generateOutPutFilePath(
             outputFolderPath,
             inputFilePath
         )
 
-        self.assertEqual(fullOutFilePath, expectedFullOutputFilePath)
+        self.assertEqual(generatedFullOutputFilePath, expectedFullOutputFilePath)
 
     def test_should_throw_error_if_outputFolderPath_is_a_filePath(self):
         fileHandler: FileHandler = FileHandler()
@@ -66,16 +66,16 @@ class FileHandlerTestCase(unittest.TestCase):
         self.assertRaises(FilePathError, fileHandler.generateOutPutFilePath,
                           outputFolderPath, inputFilePath)
 
-    def test_should_write_mv3Rule_to_folder(self):
+    def test_should_write_mv3Rule_to_file(self):
         outputFilePath: str = \
-            '/home/emmanuel/Desktop/urlPatternParser/test/processedMv3RuleList/testList_processed.json'
+            '/home/emmanuel/Desktop/urlPatternParser/test/processedMv3RuleList/fileHandler_processed.json'
+
         self._write_mv3Rule_to_outputFile(outputFilePath)
 
-        expectedRule: List[Dict[str, Any]]= self._expectedMv3Rule()
-        retrievedRules: List[Dict[str, Any]] = self._readRuleFromPath(outputFilePath)
+        expectedRules: List[Dict[str, Any]]= self._expectedMv3Rule()
+        generatedRules: List[Dict[str, Any]] = self._readRuleFromPath(outputFilePath)
 
-        for i in range(len(retrievedRules) - 1):
-            self.assertEqual(retrievedRules[i], expectedRule[i])
+        self.assertEqual(generatedRules, expectedRules)
 
     def _readRuleFromPath(self, aOutputFilePath) -> List[Dict[str, Any]]:
         retrievedRules: List[Dict[str, Any]]
@@ -87,6 +87,7 @@ class FileHandlerTestCase(unittest.TestCase):
 
     def _write_mv3Rule_to_outputFile(self, aOutputFilePath):
         fileHandler: FileHandler = FileHandler()
+
         mv3RuleList: List[Mv3Rule] = self._createMv3List()
 
         fileHandler.writeMv3RuleJsonToOutputFile(aOutputFilePath, mv3RuleList)

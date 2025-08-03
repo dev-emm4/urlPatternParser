@@ -39,13 +39,15 @@ class Mv3RuleFactoryTestCase(unittest.TestCase):
 
     def test_should_throw_exception_when_domainOption_is_specified_twice(self):
         mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
-        unFormattedRule: str = '@@/exoclick.$script,~xmlhttprequest,domain=exoclick.bamboohr.co.uk|~exoclick.kayako.com,domain=example.com,~third-party'
+        unFormattedRule: str = \
+            '@@/exoclick.$script,~xmlhttprequest,domain=exoclick.bamboohr.co.uk|~exoclick.kayako.com,domain=example.com,~third-party'
 
         self.assertRaises(ParsingError, mv3RuleFactory.createMv3Rule, unFormattedRule, 1)
 
     def test_should_throw_exception_when_domainType_is_specified_twice(self):
         mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
-        unFormattedRule: str = '@@/exoclick.$script,~xmlhttprequest,domain=exoclick.bamboohr.co.uk|~exoclick.kayako.com,~third-party,third-party'
+        unFormattedRule: str = \
+            '@@/exoclick.$script,~xmlhttprequest,domain=exoclick.bamboohr.co.uk|~exoclick.kayako.com,~third-party,third-party'
 
         self.assertRaises(ParsingError, mv3RuleFactory.createMv3Rule, unFormattedRule, 1)
 
