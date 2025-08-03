@@ -7,7 +7,8 @@ from src.parser import Parser
 class ParserTestCase(unittest.TestCase):
     def test_should_create_mv3rule_from_valid_rule(self):
         parser: Parser = Parser()
-        mv3RuleList: List[Mv3Rule] = parser.parse('testList.txt')
+        mv3RuleList: List[Mv3Rule] = parser.parse(
+            '/home/emmanuel/Desktop/urlPatternParser/test/rawRuleList/testList.txt')
 
         self.assertEqual(len(mv3RuleList), 2)
         self.assertEqual(mv3RuleList[0].condition.urlFilter, '/parser.com')

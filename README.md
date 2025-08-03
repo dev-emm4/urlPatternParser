@@ -50,12 +50,10 @@ git clone https://github.com/dev-emm4/urlPatternParser.git
 cd urlPatternParser
 ```
 
-Add your unformatted rule file (txt format) to the `raRuleList` folder in the code directory.
-
 Then run the parser to convert your filter lists:
 
 ```bash
-python parser.parse(input_rules.txt, output_rules.json)
+python parser.parse(input_rules.txt, output_rules_folder)
 ```
 
 ---

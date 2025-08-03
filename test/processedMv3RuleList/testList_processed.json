@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "example.com",
+      "domainType": "thirdParty",
+      "resourceType": [
+        "script"
+      ],
+      "excludedResourceType": [
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 2,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "example2.com",
+      "domainType": "thirdParty",
+      "resourceType": [
+        "script"
+      ],
+      "excludedResourceType": [
+        "xmlhttprequest"
+      ]
+    }
+  }
+]

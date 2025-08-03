@@ -14,74 +14,74 @@ class Condition:
         self.urlFilter = aUrlFilter
 
     def setRegexFilter(self, aRegexFilter: str):
-        newRegexFilter: str = self._removeForwardSlash(aRegexFilter)
-        self.regexFilter = newRegexFilter
-
-    def _removeForwardSlash(self, aString):
-        if len(aString) <= 2:
-            return ""
-        return aString[1:-1]
+        self.regexFilter = aRegexFilter
 
     def setDomainType(self, aDomainType: str):
-        if aDomainType.startswith('~'):
-            self.domainType = 'firstParty'
-        else:
-            self.domainType = 'thirdParty'
+        self.domainType = aDomainType
 
-    def setInitiatorDomain(self, aInitiatorDomainList: List[str]):
-        for initiatorDomain in aInitiatorDomainList:
-            if self._isInitiatorDomainExcluded(initiatorDomain):
-                self._assignListToExcludedInitiatorDomain()
-                initiatorDomainWithoutNotSymbol: str = self._removeNotSymbolFromString(initiatorDomain)
-                self.excludedInitiatorDomain.append(initiatorDomainWithoutNotSymbol)
-            else:
-                self._assignListToInitiatorDomain()
-                self.initiatorDomain.append(initiatorDomain)
-
-    def _isInitiatorDomainExcluded(self, aInitiatorDomain: str) -> bool:
-        if aInitiatorDomain.startswith('~'):
-            return True
-        return False
-
-    def _assignListToExcludedInitiatorDomain(self):
-        if self.excludedInitiatorDomain is None:
-            self.excludedInitiatorDomain = []
+    def includeInitiatorDomain(self, aInitiatorDomain: str):
+        self._assignListToInitiatorDomain()
+        self.initiatorDomain.append(aInitiatorDomain)
 
     def _assignListToInitiatorDomain(self):
         if self.initiatorDomain is None:
             self.initiatorDomain = []
 
-    def setResourceType(self, aResourceType: str):
-        if self._isResourceTypeExclude(aResourceType):
-            self._assignListToExcludedResourceType()
-            resourceTypeWithoutNotSymbol: str = self._removeNotSymbolFromString(aResourceType)
-            self.excludedResourceType.append(resourceTypeWithoutNotSymbol)
-        else:
-            self._assignListToResourceType()
-            self.resourceType.append(aResourceType)
+    def excludeInitiatorDomain(self, aInitiatorDomain: str):
+        self._assignListToExcludedInitiatorDomain()
+        self.excludedInitiatorDomain.append(aInitiatorDomain)
 
-    def _isResourceTypeExclude(self, aResourceType: str) -> bool:
-        if aResourceType.startswith('~'):
-            return  True
-        return False
+    def _assignListToExcludedInitiatorDomain(self):
+        if self.excludedInitiatorDomain is None:
+            self.excludedInitiatorDomain = []
 
-    def _removeNotSymbolFromString(self, aString: str) -> str:
-        return aString.split('~', 1)[1]
-
-    def _assignListToExcludedResourceType(self):
-        if self.excludedResourceType is None:
-            self.excludedResourceType = []
+    def includeResourceType(self, aResourceType: str):
+        self._assignListToResourceType()
+        self.resourceType.append(aResourceType)
 
     def _assignListToResourceType(self):
         if self.resourceType is None:
             self.resourceType = []
 
-    def isDomainTypeNone(self):
-        if self.domainType is None:
+    def excludeResourceType(self, aResourceType: str):
+        self._assignListToExcludedResourceType()
+        self.excludedResourceType.append(aResourceType)
+
+    def _assignListToExcludedResourceType(self):
+        if self.excludedResourceType is None:
+            self.excludedResourceType = []
+
+    def doesResourceTypeExistsInExcludedResourceTypeList(self, aResourceType: str) -> bool:
+        if self.excludedResourceType is None:
+            return False
+
+        for resourceType in self.excludedResourceType:
+            if aResourceType == resourceType:
+                return True
+
+        return  False
+
+    def doesResourceTypeExistsInResourceTypeList(self, aResourceType: str) -> bool:
+        if self.resourceType is None:
+            return False
+
+        for resourceType in self.resourceType:
+            if aResourceType == resourceType:
+                return True
+
+        return False
+
+    def isDomainTypeSet(self):
+        if self.domainType is not None:
             return True
+
         return False
 
     def isInitiatorDomainSet(self):
         if self.initiatorDomain is not None or self.excludedInitiatorDomain is not None:
             return True
+
         return False
+
+    def to_dict(self):
+        return {k: v for k, v in self.__dict__.items() if v is not None}

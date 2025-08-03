@@ -1,4 +1,5 @@
 import unittest
+import re
 
 from src.error import ParsingError
 from src.mv3Rule.mv3Rule import Mv3Rule
@@ -45,6 +46,31 @@ class Mv3RuleFactoryTestCase(unittest.TestCase):
     def test_should_throw_exception_when_domainType_is_specified_twice(self):
         mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
         unFormattedRule: str = '@@/exoclick.$script,~xmlhttprequest,domain=exoclick.bamboohr.co.uk|~exoclick.kayako.com,~third-party,third-party'
+
+        self.assertRaises(ParsingError, mv3RuleFactory.createMv3Rule, unFormattedRule, 1)
+
+    def test_should_raise_exception_when_regexFilter_is_invalid(self):
+        mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
+
+        unFormattedRule1: str = '//$~script,~xmlhttprequest,domain=~exoclick.bamboohr.co.uk|~exoclick.kayako.com'
+        unFormattedRule2: str = '/*(a/$~script/,~xmlhttprequest,domain=~exoclick.bamboohr.co.uk|~exoclick.kayako.com'
+
+        self.assertRaises(ParsingError,  mv3RuleFactory.createMv3Rule, unFormattedRule1, 1)
+        self.assertRaises(re.error, mv3RuleFactory.createMv3Rule, unFormattedRule2, 2)
+
+    def test_should_raise_exception_when_urlFilter_is_invalid(self):
+        mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
+
+        unFormattedRule1: str = '$~script,~xmlhttprequest,domain=~exoclick.bamboohr.co.uk|~exoclick.kayako.com'
+        unFormattedRule2: str = '||*example.com$~script,~xmlhttprequest,domain=~exoclick.bamboohr.co.uk|~exoclick.kayako.com'
+
+        self.assertRaises(ParsingError, mv3RuleFactory.createMv3Rule, unFormattedRule1, 1)
+        self.assertRaises(ParsingError, mv3RuleFactory.createMv3Rule, unFormattedRule2, 2)
+
+    def test_should_raise_exception_when_resourceType_conflict_exists(self):
+        mv3RuleFactory: Mv3RuleFactory = Mv3RuleFactory()
+
+        unFormattedRule: str = '||example.com$~script,~xmlhttprequest,xmlhttprequest'
 
         self.assertRaises(ParsingError, mv3RuleFactory.createMv3Rule, unFormattedRule, 1)
 

@@ -1,3 +1,4 @@
+import re
 from typing import List
 
 from src.error import ParsingError
@@ -22,55 +23,91 @@ class Mv3RuleFactory:
 
     def _instantiateCondition(self, aUnformattedRule: str) -> Condition:
         condition: Condition = Condition()
+        pattern: str = self._extractPatternFromUnformattedRule(aUnformattedRule)
 
-        if self._doesUnformattedRuleHaveOption(aUnformattedRule):
-            pattern: str = self._retrievePatternIn(aUnformattedRule)
-            pattern = self._removeAllowSymbolFromPattern(pattern)
+        self._setRegexFilterIn(condition, pattern)
+        self._setUrlFilter(condition, pattern)
 
-            self._setPatternInCondition(pattern, condition)
-            option: str = self._retrieveOptionIn(aUnformattedRule)
-
-            if self._isOptionAList(option):
-                optionList: List[str] = self._splitOptions(option)
-                self._setConditionParameterUsingOptionList(condition, optionList)
-            else:
-                self._setDomainTypeInCondition(condition, option)
-                self._setInitiatorDomainInCondition(condition, option)
-                self._setResourceTypeInCondition(condition, option)
-
+        if not self._doesUnformattedRuleHaveOption(aUnformattedRule):
             return condition
+
+        option: str = self._extractOptionIn(aUnformattedRule)
+
+        if self._isOptionAList(option):
+            optionList: List[str] = self._splitOptions(option)
+            self._setConditionUsingOptionList(condition, optionList)
+        else:
+            self._setDomainTypeInCondition(condition, option)
+            self._setInitiatorDomainInCondition(condition, option)
+            self._setResourceTypeInCondition(condition, option)
+
+        return condition
+
+    def _extractPatternFromUnformattedRule(self, aUnformattedRule: str) -> str:
+        if self._doesUnformattedRuleHaveOption(aUnformattedRule):
+            pattern: str = aUnformattedRule.split('$', 1)[0]
+            pattern = self._removeAllowSymbolFromPattern(pattern)
+            return pattern
         else:
             pattern: str = aUnformattedRule
-            self._setPatternInCondition(pattern, condition)
-            return condition
-
-    def _removeAllowSymbolFromPattern(self, aPattern: str):
-        if aPattern.startswith('@@'):
-            return aPattern[2:]
-        return aPattern
+            pattern = self._removeAllowSymbolFromPattern(pattern)
+            return pattern
 
     def _doesUnformattedRuleHaveOption(self, aUnformattedRule: str) -> bool:
         if '$' in aUnformattedRule:
             return True
         return False
 
-    def _retrievePatternIn(self, aUnformattedRule: str) -> str:
-        pattern: str = aUnformattedRule.split('$', 1)[0]
-        return pattern
+    def _removeAllowSymbolFromPattern(self, aPattern: str):
+        if aPattern.startswith('@@'):
+            return aPattern[2:]
+        return aPattern
 
-    def _setPatternInCondition(self, aPattern: str, aCondition: Condition):
-        if self._isPatternregexFilter(aPattern):
-            aCondition.setRegexFilter(aPattern)
-        else:
-            aCondition.setUrlFilter(aPattern)
+    def _setRegexFilterIn(self, aCondition: Condition, aPattern: str):
+        if not self._isPatternRegexFilter(aPattern):
+            return
 
-    def _isPatternregexFilter(self, aPattern: str):
+        regexFilter: str = self._removeForwardSlash(aPattern)
+
+        self._validateRegexFilter(regexFilter)
+        aCondition.setRegexFilter(regexFilter)
+
+    def _removeForwardSlash(self, aString) -> str:
+        if len(aString) <= 2:
+            return ""
+        return aString[1:-1]
+
+    def _validateRegexFilter(self, aRegexFilter: str):
+        if aRegexFilter == "":
+            raise ParsingError(f"regexFilter cannot be empty: {aRegexFilter}")
+        # validating regexFilter with re.compile
+        re.compile(aRegexFilter)
+        return
+
+    def _setUrlFilter(self, aCondition: Condition, aPattern: str):
+        if self._isPatternRegexFilter(aPattern):
+            return
+
+        urlFilter: str = aPattern
+
+        self._validateUrlFilter(urlFilter)
+        aCondition.setUrlFilter(urlFilter)
+
+    def _isPatternRegexFilter(self, aPattern: str):
         if aPattern.startswith('/') and aPattern.endswith('/'):
             return True
         else:
             return False
 
-    def _retrieveOptionIn(self, aUnformattedRule: str) -> str:
+    def _validateUrlFilter(self, aUrlFilter: str):
+        if aUrlFilter.startswith('||*'):
+            raise ParsingError(f'urlFilter cannot start with ||*: {aUrlFilter}')
+        if aUrlFilter == "":
+            raise ParsingError(f'urlFilter cannot be empty: {aUrlFilter}')
+
+        return
+
+    def _extractOptionIn(self, aUnformattedRule: str) -> str:
         option: str = aUnformattedRule.split('$', 1)[1]
         return option
 
@@ -82,7 +119,7 @@ class Mv3RuleFactory:
     def _splitOptions(self, aOption: str) -> List[str]:
         return aOption.split(',')
 
-    def _setConditionParameterUsingOptionList(self, aCondition: Condition, aOptionList: List[str]):
+    def _setConditionUsingOptionList(self, aCondition: Condition, aOptionList: List[str]):
         for option in aOptionList:
             self._setDomainTypeInCondition(aCondition, option)
             self._setInitiatorDomainInCondition(aCondition, option)
@@ -93,27 +130,41 @@ class Mv3RuleFactory:
 
         if not optionValidator.optionIsAValidDomainType(aOption):
             return
-        if not aCondition.isDomainTypeNone():
-            raise ParsingError('domain Type conflict')
 
-        aCondition.setDomainType(aOption)
+        if aCondition.isDomainTypeSet():
+            raise ParsingError(f'double domain Type specified: {aOption}')
+
+        domainType: str = self._getDomainTypeValue(aOption)
+
+        aCondition.setDomainType(domainType)
+
+    def _getDomainTypeValue(self, aDomainType: str) -> str:
+        if aDomainType.startswith('~'):
+            return 'firstParty'
+        else:
+            return 'thirdParty'
 
     def _setInitiatorDomainInCondition(self, aCondition: Condition, aOption: str):
         optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
 
         if not optionValidator.optionIsAInitiatorDomain(aOption):
             return
+
         if aCondition.isInitiatorDomainSet():
-            raise ParsingError('double domain found in rule')
+            raise ParsingError(f'double domain found in rule: {aOption}')
 
-        newInitiatorDomain: str = self._cleanInitiatorDomain(aOption)
+        initiatorDomain: str = self._cleanInitiatorDomain(aOption)
 
-        if self._isInitiatorDomainAList(newInitiatorDomain):
-            initiatorDomainList: List[str] = self._splitInitiatorDomains(newInitiatorDomain)
-            aCondition.setInitiatorDomain(initiatorDomainList)
+        if self._isInitiatorDomainAList(initiatorDomain):
+            initiatorDomainList: List[str] = self._splitInitiatorDomains(initiatorDomain)
+            self._setListOfInitiatorDomainInCondition(initiatorDomainList, aCondition)
+            return
+
+        if self._isInitiatorDomainExcluded(initiatorDomain):
+            initiatorDomain = self._removeNotSymbolFromString(initiatorDomain)
+            aCondition.excludeInitiatorDomain(initiatorDomain)
         else:
-            initiatorDomainList: List[str] = [newInitiatorDomain]
-            aCondition.setInitiatorDomain(initiatorDomainList)
+            aCondition.includeInitiatorDomain(initiatorDomain)
 
     def _cleanInitiatorDomain(self, aInitiatorDomain: str) -> str:
         cleanInitiatorDomain: str = aInitiatorDomain.split('domain=', 1)[1]
@@ -127,12 +178,51 @@ class Mv3RuleFactory:
     def _splitInitiatorDomains(self, aInitiatorDomain: str) -> list[str]:
         return aInitiatorDomain.split('|')
 
+    def _setListOfInitiatorDomainInCondition(self, aInitiatorDomainList: List[str], aCondition: Condition):
+        for initiatorDomain in aInitiatorDomainList:
+            if self._isInitiatorDomainExcluded(initiatorDomain):
+                initiatorDomain = self._removeNotSymbolFromString(initiatorDomain)
+                aCondition.excludeInitiatorDomain(initiatorDomain)
+            else:
+                aCondition.includeInitiatorDomain(initiatorDomain)
+
+    def _isInitiatorDomainExcluded(self, aInitiatorDomain: str) -> bool:
+        if aInitiatorDomain.startswith('~'):
+            return True
+
+        return False
+
     def _setResourceTypeInCondition(self, aCondition: Condition, aOption: str):
         optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
 
         if not optionValidator.optionIsAValidResourceType(aOption):
             return
-        aCondition.setResourceType(aOption)
+
+        resourceType: str = aOption
+
+        if self._isResourceTypeExcluded(resourceType):
+            resourceType = self._removeNotSymbolFromString(resourceType)
+
+            if aCondition.doesResourceTypeExistsInResourceTypeList(resourceType):
+                raise ParsingError(f'conflicting resource type and excluded resource type: {resourceType}')
+
+            aCondition.excludeResourceType(resourceType)
+        else:
+            if aCondition.doesResourceTypeExistsInExcludedResourceTypeList(resourceType):
+                raise ParsingError(f'conflicting resource type and excluded resource type: {resourceType}')
+
+            aCondition.includeResourceType(resourceType)
+
+    def _isResourceTypeExcluded(self, aResourceType: str) -> bool:
+        if aResourceType.startswith('~'):
+            return True
+
+        return False
+
+    def _removeNotSymbolFromString(self, aString: str) -> str:
+        initiatorDomain = aString.split('~', 1)[1]
+
+        return initiatorDomain
 
     def _isUnformattedRuleBlocking(self, aUnformattedRule: str) -> bool:
         if aUnformattedRule.startswith('@@'):
