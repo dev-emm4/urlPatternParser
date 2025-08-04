@@ -14,7 +14,7 @@ class FileHandler:
 
         self._validateFile(safeInputFilePath, ['.txt'])
 
-        with open(safeInputFilePath, 'r') as file:
+        with open(safeInputFilePath, 'r', encoding='utf-8') as file:
             stringList: List[str] = file.read().splitlines()
 
         unformattedRules: List[str] = self._extractUnformattedFilteringRulesFrom(stringList)

@@ -1,9 +1,9 @@
 import unittest
 import re
 
-from src.error import ParsingError
-from src.mv3Rule.mv3Rule import Mv3Rule
-from src.mv3Rule.mv3RuleFactory import Mv3RuleFactory
+from error import ParsingError
+from mv3Rule.mv3Rule import Mv3Rule
+from mv3Rule.mv3RuleFactory import Mv3RuleFactory
 
 
 class Mv3RuleFactoryTestCase(unittest.TestCase):

@@ -63,7 +63,7 @@ The parser generates rules compatible with Chrome's declarativeNetRequest, the g
 ### Arguments
 
 - `inputPath` - Path to your input text file (required)
-- `--outputFolderPath` - Path to the folder where manfest.json v3 rule will be stored
+- `outputFolderPath` - Path to the folder where manfest.json v3 rule will be stored
 
 
 ## Using as a Python Library
@@ -75,7 +75,7 @@ from parser import Parser
 
 # Convert
 parser = Parser()
-result = parser.covert("txt file location", 'processed json folder location')
+result = parser.convert("txt file location", "processed json folder location")
 ```
 
 ## Getting Help

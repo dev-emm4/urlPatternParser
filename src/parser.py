@@ -7,7 +7,7 @@ from mv3Rule.mv3RuleFactory import Mv3RuleFactory
 
 
 class Parser:
-    def covert(self, aInputFilePath: str, aOutputFolderPath: str):
+    def convert(self, aInputFilePath: str, aOutputFolderPath: str):
         fileHandler: FileHandler = FileHandler()
 
         unformattedRuleList: List[str] = fileHandler.readUnformattedRuleFrom(aInputFilePath)
@@ -28,5 +28,3 @@ class Parser:
                 pass
 
         return mv3RuleList
-
-

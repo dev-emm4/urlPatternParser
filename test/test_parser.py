@@ -2,17 +2,21 @@ import json
 import unittest
 from typing import List, Dict, Any
 
+from locations import Locations
 from src.parser import Parser
 
 
 class ParserTestCase(unittest.TestCase):
+    def setUp(self):
+        self.locations = Locations()
+
     def test_should_generate_mv3rule_from_valid_rule(self):
         parser: Parser = Parser()
 
-        inputFilePath: str = '/home/emmanuel/Desktop/urlPatternParser/test/rawRuleList/testList.txt'
-        outputFolderPath: str = '/home/emmanuel/Desktop/urlPatternParser/test/processedMv3RuleList/'
+        inputFilePath: str = self.locations.getInputFilePathFor('testList.txt')
+        outputFolderPath: str = self.locations.getOutputFolderPath()
 
-        parser.covert(inputFilePath, outputFolderPath)
+        parser.convert(inputFilePath, outputFolderPath)
 
         generatedRules: List[Dict[str, Any]] = self._readRuleFromPath(outputFolderPath + 'testList_processed.json')
         expectedRules: List[Dict[str, Any]] = self._expectedRules()
