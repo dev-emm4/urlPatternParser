@@ -4,14 +4,14 @@ A Python codebase for converting unformatted URL filtering rules (like those fro
 
 ## Overview
 
-The `urlPatternParser` helps browser extension developers migrate from Manifest V2 to V3 by transforming traditional ad-blocking and content filtering rules into the new declarativeNetRequest format required by Chrome's Manifest V3.
+The `urlPatternParser` helps browser extension developers migrate from Manifest V2 to V3 by transforming traditional ad-blocking into the new declarativeNetRequest format required by Chrome's Manifest V3.
 
 ## Features
 
 - ✅ Parses EasyList and similar filter list formats
 - ✅ Converts to Manifest V3 declarativeNetRequest rules
 - ✅ Handles various rule types and patterns
-- ✅ Validates generated rules
+- ✅ Ensures generated rules are compatible with Chrome's manifest v3 requirements
 
 ## Supported Rule Types
 Your input should be a text file (.txt) containing rules, The parser supports various rule formats including:
