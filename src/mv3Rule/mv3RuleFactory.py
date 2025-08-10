@@ -9,6 +9,9 @@ from unFormattedRuleOptionValidator import UnFormattedRuleOptionValidator
 
 
 class Mv3RuleFactory:
+    def __init__(self):
+        self.optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
+
     def createMv3Rule(self, aUnformattedRule: str, aId: int) -> Mv3Rule:
         condition: Condition = self._instantiateCondition(aUnformattedRule)
 
@@ -40,6 +43,7 @@ class Mv3RuleFactory:
             self._setDomainTypeInCondition(condition, option)
             self._setInitiatorDomainInCondition(condition, option)
             self._setResourceTypeInCondition(condition, option)
+            self._activateUrlFilterCaseSensitiveInCondition(condition, option)
 
         return condition
 
@@ -124,30 +128,21 @@ class Mv3RuleFactory:
             self._setDomainTypeInCondition(aCondition, option)
             self._setInitiatorDomainInCondition(aCondition, option)
             self._setResourceTypeInCondition(aCondition, option)
+            self._activateUrlFilterCaseSensitiveInCondition(aCondition, option)
 
     def _setDomainTypeInCondition(self, aCondition: Condition, aOption: str):
-        optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
-
-        if not optionValidator.optionIsAValidDomainType(aOption):
+        if not self.optionValidator.optionIsAValidDomainType(aOption):
             return
 
         if aCondition.isDomainTypeSet():
             raise ParsingError(f'double domain Type specified: {aOption}')
 
-        domainType: str = self._getDomainTypeValue(aOption)
+        domainType: str = self.optionValidator.transformDomainTypeValueToMv3CompatibleValue(aOption)
 
         aCondition.setDomainType(domainType)
 
-    def _getDomainTypeValue(self, aDomainType: str) -> str:
-        if aDomainType.startswith('~'):
-            return 'firstParty'
-        else:
-            return 'thirdParty'
-
     def _setInitiatorDomainInCondition(self, aCondition: Condition, aOption: str):
-        optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
-
-        if not optionValidator.optionIsAInitiatorDomain(aOption):
+        if not self.optionValidator.optionIsAInitiatorDomain(aOption):
             return
 
         if aCondition.isInitiatorDomainSet():
@@ -193,21 +188,22 @@ class Mv3RuleFactory:
         return False
 
     def _setResourceTypeInCondition(self, aCondition: Condition, aOption: str):
-        optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
-
-        if not optionValidator.optionIsAValidResourceType(aOption):
+        if not self.optionValidator.optionIsAValidResourceType(aOption):
             return
 
         resourceType: str = aOption
 
         if self._isResourceTypeExcluded(resourceType):
             resourceType = self._removeNotSymbolFromString(resourceType)
+            resourceType = self.optionValidator.transformResourceTypeValueToMv3CompatibleValue(resourceType)
 
             if aCondition.doesResourceTypeExistsInResourceTypeList(resourceType):
                 raise ParsingError(f'conflicting resource type and excluded resource type: {resourceType}')
 
             aCondition.excludeResourceType(resourceType)
         else:
+            resourceType = self.optionValidator.transformResourceTypeValueToMv3CompatibleValue(resourceType)
+
             if aCondition.doesResourceTypeExistsInExcludedResourceTypeList(resourceType):
                 raise ParsingError(f'conflicting resource type and excluded resource type: {resourceType}')
 
@@ -223,6 +219,18 @@ class Mv3RuleFactory:
         initiatorDomain = aString.split('~', 1)[1]
 
         return initiatorDomain
+
+    def _activateUrlFilterCaseSensitiveInCondition(self, aCondition: Condition, aOption: str):
+        optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
+        if not optionValidator.optionIsAUrlFilterCaseSensitivitySetting(aOption):
+            return
+
+        caseSensitivitySetting: str = aOption
+
+        if aCondition.isCaseSensitiveSet():
+            raise ParsingError(f'conflicting resource type and excluded resource type: {caseSensitivitySetting}')
+
+        aCondition.activateCaseSensitivity()
 
     def _isUnformattedRuleBlocking(self, aUnformattedRule: str) -> bool:
         if aUnformattedRule.startswith('@@'):

@@ -8,6 +8,17 @@ from mv3Rule.mv3Rule import Mv3Rule
 
 
 class FileHandler:
+    def __init__(self):
+        self._validOptionPattern = re.compile(
+            r'^(?:script|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
+            r'|~stylesheet|~object|~xmlhttprequest|~subdocument|~ping|~websocket|~document|~other|font|media|other'
+            r'|domain=~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(?:\|~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,})*)(?:,'
+            r'(?:script|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
+            r'|~stylesheet|~object|~xmlhttprequest|~subdocument|~ping|~websocket|~document|~other|font|media|other'
+            r'|domain=~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(?:\|~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,})*))*$'
+        )
+        self._cosmeticFilterPattern = r'#[@$?]?#'
+
     def readUnformattedRuleFrom(self, aInputFilePath: str) -> List[str]:
         stringList: List[str]
         safeInputFilePath: Path = self._covertToSafePath(aInputFilePath)
@@ -24,7 +35,7 @@ class FileHandler:
         unformattedRules: List[str] = []
         for string in aStringList:
             stringWithoutSpace: str = self._removeSpacesFromString(string)
-            if self._isStringANetworkFilteringRule(stringWithoutSpace):
+            if self._isStringAValidNetworkFilteringRule(stringWithoutSpace):
                 unformattedRules.append(stringWithoutSpace)
 
         return unformattedRules
@@ -32,16 +43,28 @@ class FileHandler:
     def _removeSpacesFromString(self, aString: str) -> str:
         return re.sub(r'\s+', '', aString)
 
-    def _isStringANetworkFilteringRule(self, aString: str) -> bool:
+    def _isStringAValidNetworkFilteringRule(self, aString: str) -> bool:
         if aString == "":
             return False
         elif aString.startswith('!'):
             return False
-        elif re.match(r'^(?:[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\s*,\s*[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})*\s*)?(?:##|#[@$?]#)',
-                      aString):
+        elif re.search(self._cosmeticFilterPattern, aString):
             return False
+        elif '$' in aString:
+            options: str = self._extractOptionsFrom(aString)
+            return self._isOptionFormatValid(options)
         else:
             return True
+
+    def _extractOptionsFrom(self, aString: str) -> str:
+        options: str = aString.split('$', 1)[1]
+
+        return options
+
+    def _isOptionFormatValid(self, aOption: str) -> bool:
+        if re.match(self._validOptionPattern, aOption):
+            return True
+        return False
 
     def writeMv3RuleJsonToOutputFile(self, aOutputFilePath: str, aMv3RuleList: List[Mv3Rule]):
         dictMv3Rule: List[Dict[str, Any]] = self._transformToDict(aMv3RuleList)

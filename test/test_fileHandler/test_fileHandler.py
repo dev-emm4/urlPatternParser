@@ -4,10 +4,10 @@ from typing import List, Dict, Any
 
 from error import FilePathError
 from fileHandler import FileHandler
+from locations import Locations
 from mv3Rule.action import Action
 from mv3Rule.condition import Condition
 from mv3Rule.mv3Rule import Mv3Rule
-from locations import Locations
 
 
 class FileHandlerTestCase(unittest.TestCase):
@@ -17,7 +17,7 @@ class FileHandlerTestCase(unittest.TestCase):
     def test_should_import_only_networkFilteringRules(self):
         fileHandler: FileHandler = FileHandler()
         unFormattedRules: List[str] = fileHandler.readUnformattedRuleFrom(
-            self.locations.getInputFilePathFor('easylist.txt'))
+            self.locations.getInputFilePathFor('fileHandlerInputRules.txt'))
 
         for rule in unFormattedRules:
             # should not import empty string
@@ -25,8 +25,10 @@ class FileHandlerTestCase(unittest.TestCase):
             # should not import comments
             self.assertNotEqual(rule[0], '!')
             # should not import content filters
-            self.assertNotRegex(rule,
-                                r'^(?:[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\s*,\s*[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})*\s*)?(?:##|#[@$?]#)')
+            self.assertNotIn('##', rule)
+            self.assertNotIn('#@#', rule)
+            self.assertNotIn('#$#', rule)
+            self.assertNotIn('#?#', rule)
 
     def test_should_throw_an_error_if_inputFile_does_not_exist(self):
         fileHandler: FileHandler = FileHandler()
@@ -49,10 +51,10 @@ class FileHandlerTestCase(unittest.TestCase):
         fileHandler: FileHandler = FileHandler()
 
         expectedFullOutputFilePath: str = \
-            '/home/emmanuel/Desktop/urlPatternParser/test/processedMv3RuleList/testList_processed.json'
+            '/home/emmanuel/Desktop/urlPatternParser/test/processedMv3RuleList/fileHandlerInputRules_processed.json'
         generatedFullOutputFilePath: str = fileHandler.generateOutPutFilePath(
             self.locations.getOutputFolderPath(),
-            self.locations.getInputFilePathFor('testList.txt')
+            self.locations.getInputFilePathFor('fileHandlerInputRules.txt')
         )
 
         self.assertEqual(generatedFullOutputFilePath, expectedFullOutputFilePath)
@@ -62,7 +64,7 @@ class FileHandlerTestCase(unittest.TestCase):
 
         self.assertRaises(FilePathError, fileHandler.generateOutPutFilePath,
                           self.locations.getInputFilePathFor('easylist.txt'),
-                          self.locations.getInputFilePathFor('testList.txt'))
+                          self.locations.getInputFilePathFor('easylist.txt'))
 
     def test_should_write_mv3Rule_to_file(self):
         outputFilePath: str = \

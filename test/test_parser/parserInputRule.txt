@@ -1,0 +1,23 @@
+! correct rules that should be imported *********
+
+/example.com$stylesheet,script,image
+/example.com/*$image,domain=~second.example.com|~third.example.com
+@@/example.com$stylesheet,script,image
+example.com
+
+! invalid rules that should be dropped *********
+
+$
+example.com$
+example.com$,script
+example.com$script,
+example.com$invalid_option
+example.com$genericblock
+example.com$popup
+example.com$webrtc
+##.advertisement
+~first.example.com,~second.example.com##div.ad-widget
+/example2/$image,domain=example.com|example.com,domain=example.com
+exam$script,~third-party,third-party
+||*example$stylesheet,script
+/exa(mple/$image,domain=~example.com

@@ -9,6 +9,7 @@ class Condition:
         self.excludedInitiatorDomain: None | List[str] = None
         self.resourceType: None | List[str] = None
         self.excludedResourceType: None | List[str] = None
+        self.isUrlFilterCaseSensitive : None | bool = None
 
     def setUrlFilter(self, aUrlFilter: str):
         self.urlFilter = aUrlFilter
@@ -51,6 +52,9 @@ class Condition:
         if self.excludedResourceType is None:
             self.excludedResourceType = []
 
+    def activateCaseSensitivity(self):
+        self.isUrlFilterCaseSensitive = True
+
     def doesResourceTypeExistsInExcludedResourceTypeList(self, aResourceType: str) -> bool:
         if self.excludedResourceType is None:
             return False
@@ -81,6 +85,11 @@ class Condition:
         if self.initiatorDomain is not None or self.excludedInitiatorDomain is not None:
             return True
 
+        return False
+
+    def isCaseSensitiveSet(self) -> bool:
+        if self.isUrlFilterCaseSensitive is not None:
+            return True
         return False
 
     def to_dict(self):

@@ -15,13 +15,30 @@ The `urlPatternParser` helps browser extension developers migrate from Manifest 
 
 ## Supported Rule Types
 Your input should be a text file (.txt) containing rules, The parser supports various rule formats including:
+
+### Basic URL Patterns
 - **Basic URL patterns**: `||example.com^`
 - **Wildcard patterns**: `/ads/*`
 - **Exception rules**: `@@||allowlist.com^`
-- **Domain-specific rules**: `example.com##.ad-banner`
-- **Resource type filters**: `||ads.com^$script,image`
+- **Path-based rules**: `example.com/ads/`
 
-The parser only supports blocking and allowing rules. 
+### Resource Type Modifiers
+- **Script blocking**: `||ads.com^$script`
+- **Image blocking**: `||banners.com^$image`
+- **Stylesheet blocking**: `||styles.com^$stylesheet`
+- **Multiple types**: `||ads.com^$script,image,stylesheet`
+- **Type exceptions**: `||example.com^$~script`
+
+### Domain-Specific Rules
+- **Single domain**: `||ads.com^$domain=example.com`
+- **Multiple domains**: `||ads.com^$domain=site1.com|site2.org`
+- **Domain exceptions**: `||ads.com^$domain=~facebook.com|example.com`
+
+### Combined Modifiers
+- **Complex rules**: `||ads.com^$script,image,domain=example.com|test.org,third-party`
+- **Mixed exceptions**: `||tracker.com^$~script,~image,domain=~facebook.com`
+
+The parser only supports blocking and allowing rules.
 
 ## Output Format
 The parser generates rules compatible with Chrome's declarativeNetRequest, the generated rule will be stored in the specified output folder in a JSON format:
@@ -41,6 +58,7 @@ The parser generates rules compatible with Chrome's declarativeNetRequest, the g
   }
 ]
 ```
+
 # Usage
 
 ## Prerequisites
@@ -57,14 +75,14 @@ The parser generates rules compatible with Chrome's declarativeNetRequest, the g
 
 2. **Run the parser**:
    ```bash
-   python run.py --inputPath "input.txt" --outputFolderPath "folder"
+   python run.py --inputPath "input.txt" --outputFolderPath "folder" --maxLength 30000
    ```
 
 ### Arguments
 
-- `inputPath` - Path to your input text file (required)
-- `outputFolderPath` - Path to the folder where manfest.json v3 rule will be stored
-
+- `inputPath` - Path to your input text file (required, string)
+- `outputFolderPath` - Path to the folder where manifest.json v3 rule will be stored (required, string)
+- `maxLength` - Maximum number of rules to be generated (optional, integer)
 
 ## Using as a Python Library
 
@@ -75,7 +93,7 @@ from parser import Parser
 
 # Convert
 parser = Parser()
-result = parser.convert("txt file location", "processed json folder location")
+result = parser.convert("txt file location", "processed json folder location", 30000)
 ```
 
 ## Getting Help
@@ -86,16 +104,17 @@ python run.py --help
 
 This will display all available options and usage information.
 
-
 ## Disclaimer
 
 Invalid URL rules will be automatically dropped during parsing. This includes:
 
-1. Rules with invalid URL filter i.e. empty filters and filters starting with "||*"
-2. Rules that have invalid regex filters
-3. Rules with duplicate initiator domain options (multiple "domain=" declarations)
-4. Rules with duplicate domain type definitions (e.g., "third-party" defined twice with or without the "~")
-5. Rules specified for content filtering
+1. **Invalid URL filters**: Empty filters and filters starting with "||*"
+2. **Invalid regex filters**: Malformed regular expressions
+3. **Duplicate domain options**: Multiple "domain=" declarations in the same rule
+4. **Duplicate domain type definitions**: e.g., "third-party" defined twice with or without the "~"
+5. **Content filtering rules**: Rules specified for cosmetic/content filtering
+6. **Unsupported modifier options**: Any rule containing modifier options not defined in the [AdBlock Plus filter documentation](https://help.adblockplus.org/hc/en-us/articles/360062733293-How-to-write-filters)
+7. **Specifically unsupported modifiers**: Rules containing `genericblock` or `popup` modifiers
 
 **Note**: This tool is designed to help with Manifest V3 migration. Always test your converted rules thoroughly in your extension environment.
 
