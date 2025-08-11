@@ -136,10 +136,10 @@ class FileHandlerTestCase(unittest.TestCase):
                 "condition": {
                     "urlFilter": "example.com",
                     "domainType": "thirdParty",
-                    "resourceType": [
+                    "resourceTypes": [
                         "script"
                     ],
-                    "excludedResourceType": [
+                    "excludedResourceTypes": [
                         "xmlhttprequest"
                     ]
                 }
@@ -153,10 +153,10 @@ class FileHandlerTestCase(unittest.TestCase):
                 "condition": {
                     "urlFilter": "example2.com",
                     "domainType": "thirdParty",
-                    "resourceType": [
+                    "resourceTypes": [
                         "script"
                     ],
-                    "excludedResourceType": [
+                    "excludedResourceTypes": [
                         "xmlhttprequest"
                     ]
                 }

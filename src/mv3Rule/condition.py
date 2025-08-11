@@ -7,8 +7,8 @@ class Condition:
         self.domainType: None | str = None
         self.initiatorDomain: None | List[str] = None
         self.excludedInitiatorDomain: None | List[str] = None
-        self.resourceType: None | List[str] = None
-        self.excludedResourceType: None | List[str] = None
+        self.resourceTypes: None | List[str] = None
+        self.excludedResourceTypes: None | List[str] = None
         self.isUrlFilterCaseSensitive : None | bool = None
 
     def setUrlFilter(self, aUrlFilter: str):
@@ -38,38 +38,38 @@ class Condition:
 
     def includeResourceType(self, aResourceType: str):
         self._assignListToResourceType()
-        self.resourceType.append(aResourceType)
+        self.resourceTypes.append(aResourceType)
 
     def _assignListToResourceType(self):
-        if self.resourceType is None:
-            self.resourceType = []
+        if self.resourceTypes is None:
+            self.resourceTypes = []
 
     def excludeResourceType(self, aResourceType: str):
         self._assignListToExcludedResourceType()
-        self.excludedResourceType.append(aResourceType)
+        self.excludedResourceTypes.append(aResourceType)
 
     def _assignListToExcludedResourceType(self):
-        if self.excludedResourceType is None:
-            self.excludedResourceType = []
+        if self.excludedResourceTypes is None:
+            self.excludedResourceTypes = []
 
     def activateCaseSensitivity(self):
         self.isUrlFilterCaseSensitive = True
 
     def doesResourceTypeExistsInExcludedResourceTypeList(self, aResourceType: str) -> bool:
-        if self.excludedResourceType is None:
+        if self.excludedResourceTypes is None:
             return False
 
-        for resourceType in self.excludedResourceType:
+        for resourceType in self.excludedResourceTypes:
             if aResourceType == resourceType:
                 return True
 
         return  False
 
     def doesResourceTypeExistsInResourceTypeList(self, aResourceType: str) -> bool:
-        if self.resourceType is None:
+        if self.resourceTypes is None:
             return False
 
-        for resourceType in self.resourceType:
+        for resourceType in self.resourceTypes:
             if aResourceType == resourceType:
                 return True
 

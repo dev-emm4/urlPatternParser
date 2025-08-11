@@ -222,7 +222,7 @@ class Mv3RuleFactory:
 
     def _activateUrlFilterCaseSensitiveInCondition(self, aCondition: Condition, aOption: str):
         optionValidator: UnFormattedRuleOptionValidator = UnFormattedRuleOptionValidator()
-        if not optionValidator.optionIsAUrlFilterCaseSensitivitySetting(aOption):
+        if not optionValidator.optionIsACaseSensitivitySetting(aOption):
             return
 
         caseSensitivitySetting: str = aOption

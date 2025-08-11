@@ -8,8 +8,9 @@ from mv3Rule.mv3Rule import Mv3Rule
 class Mv3RUleTestCase(unittest.TestCase):
     def setUp(self):
         self.action: Action = Action('block')
-        self.condition: Condition = self._generate_condition('example.com', 'thirdParty', 'example.com', 'any.com',
-                                                             'document', 'script')
+        self.condition: Condition = self._generate_condition(
+            'example.com', 'thirdParty', 'example.com', 'any.com',
+            'document', 'script')
         self.mv3Rule = Mv3Rule(1, 1, self.action, self.condition)
         self.expectedRule = self._expectedRule()
 
@@ -33,11 +34,17 @@ class Mv3RUleTestCase(unittest.TestCase):
         return condition
 
     def _expectedRule(self):
-        expectedRule = {'id': 1, 'priority': 1, 'action': {'type': 'block'},
-                        'condition': {'urlFilter': 'example.com', 'domainType': 'thirdParty',
-                                      'initiatorDomain': ['example.com'], 'excludedInitiatorDomain': ['any.com'],
-                                      'resourceType': ['document'], 'excludedResourceType': ['script'],
-                                      'isUrlFilterCaseSensitive': True}}
+        expectedRule = {
+            'id': 1,
+            'priority': 1,
+            'action': {'type': 'block'},
+            'condition': {'urlFilter': 'example.com',
+                          'domainType': 'thirdParty',
+                          'initiatorDomain': ['example.com'],
+                          'excludedInitiatorDomain': ['any.com'],
+                          'resourceTypes': ['document'],
+                          'excludedResourceTypes': ['script'],
+                          'isUrlFilterCaseSensitive': True}}
 
         return expectedRule
 

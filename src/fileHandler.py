@@ -10,10 +10,10 @@ from mv3Rule.mv3Rule import Mv3Rule
 class FileHandler:
     def __init__(self):
         self._validOptionPattern = re.compile(
-            r'^(?:script|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
+            r'^(?:script|third-party|~third-party|match-case|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
             r'|~stylesheet|~object|~xmlhttprequest|~subdocument|~ping|~websocket|~document|~other|font|media|other'
             r'|domain=~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(?:\|~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,})*)(?:,'
-            r'(?:script|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
+            r'(?:script|third-party|~third-party|match-case|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
             r'|~stylesheet|~object|~xmlhttprequest|~subdocument|~ping|~websocket|~document|~other|font|media|other'
             r'|domain=~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(?:\|~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,})*))*$'
         )
@@ -47,6 +47,8 @@ class FileHandler:
         if aString == "":
             return False
         elif aString.startswith('!'):
+            return False
+        elif aString.startswith('[') and aString.endswith(']'):
             return False
         elif re.search(self._cosmeticFilterPattern, aString):
             return False

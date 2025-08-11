@@ -1,17 +1,18 @@
 import re
 from typing import List
+
 from error import ParsingError
 
 
 class UnFormattedRuleOptionValidator:
     def __init__(self):
         self._resourceTypeValues: List[str] = ['script', 'image', 'stylesheet', 'object', 'xmlhttprequest',
-                                              'subdocument', 'ping', 'websocket', 'document',
-                                              '~script', '~image', '~stylesheet', '~object', '~xmlhttprequest',
-                                              '~subdocument', '~ping', '~websocket', '~document',
+                                               'subdocument', 'ping', 'websocket', 'document',
+                                               '~script', '~image', '~stylesheet', '~object', '~xmlhttprequest',
+                                               '~subdocument', '~ping', '~websocket', '~document',
                                                '~other', 'popup', 'font', 'media', 'other']
         self._domainTypeValues: List[str] = ['third-party', '~third-party']
-        self._caseSensitivitySetting: str = 'match-case'
+        self._caseSensitivityIndicator: str = 'match-case'
 
     def transformDomainTypeValueToMv3CompatibleValue(self, aDomainType: str) -> str:
         if aDomainType == 'third-party':
@@ -30,7 +31,6 @@ class UnFormattedRuleOptionValidator:
             return aResourceType
 
         raise ParsingError(f'expected resourceType value but got: {aResourceType}')
-
 
     def optionIsAValidResourceType(self, aOption: str) -> bool:
         if aOption in self._resourceTypeValues:
@@ -51,8 +51,8 @@ class UnFormattedRuleOptionValidator:
 
         return False
 
-    def optionIsAUrlFilterCaseSensitivitySetting(self, aOption: str) -> bool:
-        if aOption == self._caseSensitivitySetting:
+    def optionIsACaseSensitivitySetting(self, aOption: str) -> bool:
+        if aOption == self._caseSensitivityIndicator:
             return True
 
         return False

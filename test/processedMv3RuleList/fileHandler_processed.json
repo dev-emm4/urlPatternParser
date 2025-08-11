@@ -8,10 +8,10 @@
     "condition": {
       "urlFilter": "example.com",
       "domainType": "thirdParty",
-      "resourceType": [
+      "resourceTypes": [
         "script"
       ],
-      "excludedResourceType": [
+      "excludedResourceTypes": [
         "xmlhttprequest"
       ]
     }
@@ -25,10 +25,10 @@
     "condition": {
       "urlFilter": "example2.com",
       "domainType": "thirdParty",
-      "resourceType": [
+      "resourceTypes": [
         "script"
       ],
-      "excludedResourceType": [
+      "excludedResourceTypes": [
         "xmlhttprequest"
       ]
     }

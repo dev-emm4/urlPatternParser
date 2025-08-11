@@ -8,7 +8,7 @@ from mv3Rule.mv3RuleFactory import Mv3RuleFactory
 
 
 class Parser:
-    def convert(self, aInputFilePath: str, aOutputFolderPath: str, aMaxLength: int):
+    def convert(self, aInputFilePath: str, aOutputFolderPath: str, aMaxLength: int = 3000):
         fileHandler: FileHandler = FileHandler()
 
         unformattedRuleList: List[str] = fileHandler.readUnformattedRuleFrom(aInputFilePath)
@@ -25,7 +25,7 @@ class Parser:
 
         while index < maxLength and  index < len(aUnFormattedRuleList):
             try:
-                mv3Rule: Mv3Rule = mv3RuleFactory.createMv3Rule(aUnFormattedRuleList[index], index)
+                mv3Rule: Mv3Rule = mv3RuleFactory.createMv3Rule(aUnFormattedRuleList[index], index+1)
                 mv3RuleList.append(mv3Rule)
             except ParsingError as e:
                 print(f"Parsing error at index {index}: {e}")

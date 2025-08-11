@@ -45,14 +45,14 @@ class ParserTestCase(unittest.TestCase):
     def _expectedRules(self) -> List[Dict[str, Any]]:
         expectedRules: List[Dict[str, Any]] = [
             {
-                "id": 0,
+                "id": 1,
                 "priority": 1,
                 "action": {
                     "type": "block"
                 },
                 "condition": {
                     "urlFilter": "/example.com",
-                    "resourceType": [
+                    "resourceTypes": [
                         "stylesheet",
                         "script",
                         "image"
@@ -60,7 +60,7 @@ class ParserTestCase(unittest.TestCase):
                 }
             },
             {
-                "id": 1,
+                "id": 2,
                 "priority": 1,
                 "action": {
                     "type": "block"
@@ -71,20 +71,20 @@ class ParserTestCase(unittest.TestCase):
                         "second.example.com",
                         "third.example.com"
                     ],
-                    "resourceType": [
+                    "resourceTypes": [
                         "image"
                     ]
                 }
             },
             {
-                "id": 2,
+                "id": 3,
                 "priority": 2,
                 "action": {
                     "type": "allow"
                 },
                 "condition": {
                     "urlFilter": "/example.com",
-                    "resourceType": [
+                    "resourceTypes": [
                         "stylesheet",
                         "script",
                         "image"
@@ -92,7 +92,7 @@ class ParserTestCase(unittest.TestCase):
                 }
             },
             {
-                "id": 3,
+                "id": 4,
                 "priority": 1,
                 "action": {
                     "type": "block"

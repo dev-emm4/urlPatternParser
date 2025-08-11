@@ -20,11 +20,11 @@ class Mv3RuleFactoryTestCase(unittest.TestCase):
         self.assertEqual(mv3Rule.condition.urlFilter, '/exoclick.')
         self.assertEqual(mv3Rule.condition.domainType, None)
         self.assertEqual(mv3Rule.action.type, 'block')
-        self.assertIn('main_frame', mv3Rule.condition.resourceType)
+        self.assertIn('main_frame', mv3Rule.condition.resourceTypes)
         self.assertIn('exoclick.bamboohr.co.uk', mv3Rule.condition.excludedInitiatorDomain)
         self.assertIn('exoclick.kayako.com', mv3Rule.condition.excludedInitiatorDomain)
-        self.assertIn('xmlhttprequest', mv3Rule.condition.excludedResourceType)
-        self.assertIn('script', mv3Rule.condition.excludedResourceType)
+        self.assertIn('xmlhttprequest', mv3Rule.condition.excludedResourceTypes)
+        self.assertIn('script', mv3Rule.condition.excludedResourceTypes)
         self.assertIsNone(mv3Rule.condition.isUrlFilterCaseSensitive)
 
     def test_should_create_allowing_Mv3Rule(self):
@@ -39,9 +39,9 @@ class Mv3RuleFactoryTestCase(unittest.TestCase):
         self.assertEqual(mv3Rule.action.type, 'allow')
         self.assertIn('exoclick.bamboohr.co.uk', mv3Rule.condition.initiatorDomain)
         self.assertIn('exoclick.kayako.com', mv3Rule.condition.excludedInitiatorDomain)
-        self.assertIn('script', mv3Rule.condition.resourceType)
-        self.assertIn('sub_frame', mv3Rule.condition.excludedResourceType)
-        self.assertIn('xmlhttprequest', mv3Rule.condition.excludedResourceType)
+        self.assertIn('script', mv3Rule.condition.resourceTypes)
+        self.assertIn('sub_frame', mv3Rule.condition.excludedResourceTypes)
+        self.assertIn('xmlhttprequest', mv3Rule.condition.excludedResourceTypes)
         self.assertTrue(mv3Rule.condition.isUrlFilterCaseSensitive)
 
     def test_should_throw_exception_when_caseSensitivity_is_specified_twice(self):
