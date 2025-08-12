@@ -18,7 +18,7 @@ class ParserTestCase(unittest.TestCase):
 
         self.parser.convert(inputFilePath, outputFolderPath, maxLength)
 
-        generatedRules: List[Dict[str, Any]] = self._readRuleFromPath(outputFolderPath + 'easylist_processed.json')
+        generatedRules: List[Dict[str, Any]] = self._readGeneratedRulesFromPath(outputFolderPath + 'easylist_processed.json')
 
         self.assertEqual(len(generatedRules), maxLength)
 
@@ -28,13 +28,13 @@ class ParserTestCase(unittest.TestCase):
 
         self.parser.convert(inputFilePath, outputFolderPath)
 
-        generatedRules: List[Dict[str, Any]] = self._readRuleFromPath(outputFolderPath + 'parserInputRule_processed.json')
-        expectedRules: List[Dict[str, Any]] = self._expectedRules()
+        generatedRules: List[Dict[str, Any]] = self._readGeneratedRulesFromPath(
+            outputFolderPath + 'parserInputRule_processed.json')
+        expectedGeneratedRules: List[Dict[str, Any]] = self._expectedGeneratedRules()
 
-        self.assertEqual(generatedRules, expectedRules)
+        self.assertEqual(generatedRules, expectedGeneratedRules)
 
-
-    def _readRuleFromPath(self, aOutputFilePath) -> List[Dict[str, Any]]:
+    def _readGeneratedRulesFromPath(self, aOutputFilePath) -> List[Dict[str, Any]]:
         retrievedRules: List[Dict[str, Any]]
 
         with open(aOutputFilePath, 'r') as file:
@@ -42,7 +42,7 @@ class ParserTestCase(unittest.TestCase):
 
         return retrievedRules
 
-    def _expectedRules(self) -> List[Dict[str, Any]]:
+    def _expectedGeneratedRules(self) -> List[Dict[str, Any]]:
         expectedRules: List[Dict[str, Any]] = [
             {
                 "id": 1,
