@@ -10,10 +10,12 @@ from mv3Rule.mv3Rule import Mv3Rule
 class FileHandler:
     def __init__(self):
         self._validOptionPattern = re.compile(
-            r'^(?:script|third-party|~third-party|match-case|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
+            r'^(?:script|third-party|~third-party|match-case|image|stylesheet|object|xmlhttprequest|subdocument|ping'
+            r'|websocket|document|~script|~image'
             r'|~stylesheet|~object|~xmlhttprequest|~subdocument|~ping|~websocket|~document|~other|font|media|other'
             r'|domain=~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(?:\|~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,})*)(?:,'
-            r'(?:script|third-party|~third-party|match-case|image|stylesheet|object|xmlhttprequest|subdocument|ping|websocket|document|~script|~image'
+            r'(?:script|third-party|~third-party|match-case|image|stylesheet|object|xmlhttprequest|subdocument|ping'
+            r'|websocket|document|~script|~image'
             r'|~stylesheet|~object|~xmlhttprequest|~subdocument|~ping|~websocket|~document|~other|font|media|other'
             r'|domain=~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,}(?:\|~?[a-zA-Z0-9.-]+\.[a-zA-Z0-9]{1,})*))*$'
         )
@@ -68,7 +70,7 @@ class FileHandler:
             return True
         return False
 
-    def writeMv3RuleJsonToOutputFile(self, aOutputFilePath: str, aMv3RuleList: List[Mv3Rule]):
+    def writeMv3RuleToOutputFile(self, aOutputFilePath: str, aMv3RuleList: List[Mv3Rule]):
         dictMv3Rule: List[Dict[str, Any]] = self._transformToDict(aMv3RuleList)
         safeOutputFilePath: Path = self._covertToSafePath(aOutputFilePath)
 
@@ -84,7 +86,7 @@ class FileHandler:
 
         return dictMv3RuleList
 
-    def generateOutPutFilePath(self, aOutPutFolderPath: str, aInputFilePath: str) -> str:
+    def createOutPutFile(self, aOutPutFolderPath: str, aInputFilePath: str) -> str:
         safeInputFilePath: Path = self._covertToSafePath(aInputFilePath)
         safeOutputFilePath: Path = self._covertToSafePath(aOutPutFolderPath)
 
